@@ -1,0 +1,4 @@
+(executable
+ (public_name mcs_telem)
+ (name main)
+ (libraries mcs_telem))
