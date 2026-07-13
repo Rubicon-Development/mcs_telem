@@ -1,2 +1,8 @@
 (library
- (name mcs_telem))
+ (name mcs_telem)
+ (libraries unix lwt lwt.unix yojson logs fmt)
+ (foreign_stubs
+  (language c)
+  (names statvfs_stubs))
+ (preprocess
+  (pps lwt_ppx)))

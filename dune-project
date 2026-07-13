@@ -19,7 +19,14 @@
  (name mcs_telem)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml)
+ (depends
+  ocaml
+  (mqtt (>= 0.2.2))
+  (lwt (>= 5.7.0))
+  lwt_ppx
+  yojson
+  logs
+  fmt)
  (tags
   ("add topics" "to describe" your project)))
 

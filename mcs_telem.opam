@@ -12,6 +12,12 @@ bug-reports: "https://github.com/username/reponame/issues"
 depends: [
   "dune" {>= "3.20"}
   "ocaml"
+  "mqtt" {>= "0.2.2"}
+  "lwt" {>= "5.7.0"}
+  "lwt_ppx"
+  "yojson"
+  "logs"
+  "fmt"
   "odoc" {with-doc}
 ]
 build: [

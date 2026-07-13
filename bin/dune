@@ -1,4 +1,6 @@
 (executable
  (public_name mcs_telem)
  (name main)
- (libraries mcs_telem))
+ (libraries mcs_telem mqtt.client lwt lwt.unix logs logs.fmt fmt)
+ (preprocess
+  (pps lwt_ppx)))
