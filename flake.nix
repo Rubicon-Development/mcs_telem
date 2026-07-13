@@ -41,9 +41,9 @@
           // {
             ## You can force versions of certain packages here, e.g:
             ## - force the ocaml compiler to be taken from opam-repository:
-            ocaml-base-compiler = "*";
+            # ocaml-base-compiler = "*";
             ## - or force the compiler to be taken from nixpkgs and be a certain version:
-            # ocaml-system = "4.14.0";
+            ocaml-system = "5.3.0";
             ## - or force ocamlfind to be a certain version:
             # ocamlfind = "1.9.2";
           };
