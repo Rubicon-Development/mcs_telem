@@ -29,11 +29,11 @@ let test_payload_json () =
     (json |> member "timestamp" |> to_int = 1783946096)
     "timestamp missing from payload";
   expect
-    (String.equal (json |> member "device_kernel_release" |> to_string) "6.0")
-    "device_kernel_release missing from payload";
+    (String.equal (json |> member "deviceKernelRelease" |> to_string) "6.0")
+    "deviceKernelRelease missing from payload";
   expect
-    (approx_equal (json |> member "disk_used_percent" |> to_float) 42.3)
-    "disk_used_percent missing from payload";
+    (approx_equal (json |> member "diskUsedPercent" |> to_float) 42.3)
+    "diskUsedPercent missing from payload";
   expect (json |> member "hostname" = `Null) "payload should not include hostname";
   expect
     (json |> member "device_os_type" = `Null)
@@ -41,7 +41,13 @@ let test_payload_json () =
   expect
     (json |> member "device_kernel" = `Null)
     "payload should not include device_kernel";
+  expect
+    (json |> member "device_kernel_release" = `Null)
+    "payload should not include device_kernel_release";
   expect (json |> member "disk_path" = `Null) "payload should not include disk_path";
+  expect
+    (json |> member "disk_used_percent" = `Null)
+    "payload should not include disk_used_percent";
   expect (json |> member "device" = `Null) "payload should not include nested device";
   expect (json |> member "disk" = `Null) "payload should not include nested disk"
 ;;

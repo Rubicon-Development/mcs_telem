@@ -64,8 +64,8 @@ let option_string = function
 let to_yojson t =
   `Assoc
     [ "timestamp", `Int t.timestamp
-    ; "device_kernel_release", option_string t.device.kernel_release
-    ; "disk_used_percent", `Float t.disk.used_percent
+    ; "deviceKernelRelease", option_string t.device.kernel_release
+    ; "diskUsedPercent", `Float t.disk.used_percent
     ]
 ;;
 
