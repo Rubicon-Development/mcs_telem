@@ -6,6 +6,7 @@ module type MQTT = sig
 
   val connect
     :  ?credentials:credentials
+    -> ?tls_ca:string
     -> id:string
     -> port:int
     -> string list

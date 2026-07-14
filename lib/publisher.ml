@@ -6,6 +6,7 @@ module type MQTT = sig
 
   val connect
     :  ?credentials:credentials
+    -> ?tls_ca:string
     -> id:string
     -> port:int
     -> string list
@@ -40,7 +41,12 @@ module Make (Mqtt : MQTT) = struct
     let id = client_id ~hostname in
     let credentials = credentials config in
     let%lwt client =
-      Mqtt.connect ?credentials ~id ~port:config.Config.mqtt_port [ config.mqtt_host ]
+      Mqtt.connect
+        ?credentials
+        ?tls_ca:config.Config.mqtt_tls_ca
+        ~id
+        ~port:config.Config.mqtt_port
+        [ config.mqtt_host ]
     in
     Lwt.finalize
       (fun () -> Mqtt.publish ~topic ~payload ~retain:false ~qos_at_most_once:true client)

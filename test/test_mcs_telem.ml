@@ -55,6 +55,8 @@ let test_payload_json () =
 let test_config_defaults () =
   Unix.putenv "MCS_TELEM_MQTT_HOST" "broker.local";
   Unix.putenv "MCS_TELEM_MQTT_PORT" "";
+  Unix.putenv "MCS_TELEM_MQTT_TLS" "";
+  Unix.putenv "MCS_TELEM_MQTT_TLS_CA" "";
   Unix.putenv "MCS_TELEM_INTERVAL_SECONDS" "";
   match Mcs_telem.Config.load () with
   | Error message -> failwith message
@@ -68,9 +70,24 @@ let test_config_defaults () =
       "unexpected default interval"
 ;;
 
+let test_config_tls_for_8883 () =
+  Unix.putenv "MCS_TELEM_MQTT_HOST" "broker.local";
+  Unix.putenv "MCS_TELEM_MQTT_PORT" "8883";
+  Unix.putenv "MCS_TELEM_MQTT_TLS" "";
+  Unix.putenv "MCS_TELEM_MQTT_TLS_CA" "/tmp/test-ca.pem";
+  Unix.putenv "MCS_TELEM_INTERVAL_SECONDS" "";
+  match Mcs_telem.Config.load () with
+  | Error message -> failwith message
+  | Ok config ->
+    expect
+      (config.mqtt_tls_ca = Some "/tmp/test-ca.pem")
+      "port 8883 should enable TLS with configured CA"
+;;
+
 let () =
   test_topic ();
   test_disk_percent ();
   test_payload_json ();
-  test_config_defaults ()
+  test_config_defaults ();
+  test_config_tls_for_8883 ()
 ;;

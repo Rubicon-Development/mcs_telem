@@ -8,8 +8,8 @@ module Mqtt_adapter = struct
     | Some password -> Some (Mqtt_client.Credentials (username, password))
   ;;
 
-  let connect ?credentials ~id ~port hosts =
-    Mqtt_client.connect ?credentials ~id ~port hosts
+  let connect ?credentials ?tls_ca ~id ~port hosts =
+    Mqtt_client.connect ?credentials ?tls_ca ~id ~port hosts
   ;;
 
   let publish ~topic ~payload ~retain ~qos_at_most_once client =
