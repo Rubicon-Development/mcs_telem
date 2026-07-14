@@ -18,7 +18,7 @@ let test_disk_percent () =
 let test_payload_json () =
   let telemetry : Mcs_telem.Telemetry.t =
     { hostname = "mcs01"
-    ; timestamp = "2026-07-13T12:34:56Z"
+    ; timestamp = 1783946096
     ; device = { os_type = "Unix"; kernel = Some "Linux"; kernel_release = Some "6.0" }
     ; disk = { path = "/"; used_percent = 42.3 }
     }
@@ -26,14 +26,24 @@ let test_payload_json () =
   let json = Mcs_telem.Telemetry.to_yojson telemetry in
   let open Yojson.Basic.Util in
   expect
-    (String.equal (json |> member "hostname" |> to_string) "mcs01")
-    "hostname missing from payload";
+    (json |> member "timestamp" |> to_int = 1783946096)
+    "timestamp missing from payload";
   expect
-    (String.equal (json |> member "disk" |> member "path" |> to_string) "/")
-    "disk path missing from payload";
+    (String.equal (json |> member "device_kernel_release" |> to_string) "6.0")
+    "device_kernel_release missing from payload";
   expect
-    (approx_equal (json |> member "disk" |> member "used_percent" |> to_float) 42.3)
-    "disk used_percent missing from payload"
+    (approx_equal (json |> member "disk_used_percent" |> to_float) 42.3)
+    "disk_used_percent missing from payload";
+  expect (json |> member "hostname" = `Null) "payload should not include hostname";
+  expect
+    (json |> member "device_os_type" = `Null)
+    "payload should not include device_os_type";
+  expect
+    (json |> member "device_kernel" = `Null)
+    "payload should not include device_kernel";
+  expect (json |> member "disk_path" = `Null) "payload should not include disk_path";
+  expect (json |> member "device" = `Null) "payload should not include nested device";
+  expect (json |> member "disk" = `Null) "payload should not include nested disk"
 ;;
 
 let test_config_defaults () =

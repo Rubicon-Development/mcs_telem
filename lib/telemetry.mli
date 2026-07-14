@@ -11,7 +11,7 @@ type device =
 
 type t =
   { hostname : string
-  ; timestamp : string
+  ; timestamp : int
   ; device : device
   ; disk : disk
   }

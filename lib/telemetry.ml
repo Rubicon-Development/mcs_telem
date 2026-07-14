@@ -11,7 +11,7 @@ type device =
 
 type t =
   { hostname : string
-  ; timestamp : string
+  ; timestamp : int
   ; device : device
   ; disk : disk
   }
@@ -24,17 +24,7 @@ let used_percent ~free_blocks ~total_blocks =
   else (total_blocks -. free_blocks) /. total_blocks *. 100.0
 ;;
 
-let timestamp_utc () =
-  let tm = Unix.gmtime (Unix.time ()) in
-  Printf.sprintf
-    "%04d-%02d-%02dT%02d:%02d:%02dZ"
-    (tm.tm_year + 1900)
-    (tm.tm_mon + 1)
-    tm.tm_mday
-    tm.tm_hour
-    tm.tm_min
-    tm.tm_sec
-;;
+let timestamp_unix () = int_of_float (Unix.time ())
 
 let read_first_line path =
   try
@@ -60,7 +50,7 @@ let disk_usage path =
 
 let collect ?(path = "/") () =
   { hostname = Unix.gethostname ()
-  ; timestamp = timestamp_utc ()
+  ; timestamp = timestamp_unix ()
   ; device = device_info ()
   ; disk = disk_usage path
   }
@@ -73,17 +63,9 @@ let option_string = function
 
 let to_yojson t =
   `Assoc
-    [ "hostname", `String t.hostname
-    ; "timestamp", `String t.timestamp
-    ; ( "device"
-      , `Assoc
-          [ "os_type", `String t.device.os_type
-          ; "kernel", option_string t.device.kernel
-          ; "kernel_release", option_string t.device.kernel_release
-          ] )
-    ; ( "disk"
-      , `Assoc [ "path", `String t.disk.path; "used_percent", `Float t.disk.used_percent ]
-      )
+    [ "timestamp", `Int t.timestamp
+    ; "device_kernel_release", option_string t.device.kernel_release
+    ; "disk_used_percent", `Float t.disk.used_percent
     ]
 ;;
 
