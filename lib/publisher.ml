@@ -24,6 +24,8 @@ module type MQTT = sig
 end
 
 module Make (Mqtt : MQTT) = struct
+  type client = Mqtt.client
+
   let client_id ~hostname = "mcs-telem-" ^ hostname
 
   let credentials (config : Config.t) =
@@ -34,22 +36,20 @@ module Make (Mqtt : MQTT) = struct
       Mqtt.credentials ~username ~password:(Some password)
   ;;
 
-  let publish_once config telemetry =
-    let hostname = telemetry.Telemetry.hostname in
-    let topic = Topic.telemetry ~hostname in
-    let payload = Telemetry.to_json_string telemetry in
+  let connect config ~hostname =
     let id = client_id ~hostname in
     let credentials = credentials config in
-    let%lwt client =
-      Mqtt.connect
-        ?credentials
-        ?tls_ca:config.Config.mqtt_tls_ca
-        ~id
-        ~port:config.Config.mqtt_port
-        [ config.mqtt_host ]
-    in
-    Lwt.finalize
-      (fun () -> Mqtt.publish ~topic ~payload ~retain:false ~qos_at_most_once:true client)
-      (fun () -> Mqtt.disconnect client)
+    Mqtt.connect
+      ?credentials
+      ?tls_ca:config.Config.mqtt_tls_ca
+      ~id
+      ~port:config.Config.mqtt_port
+      [ config.mqtt_host ]
+  ;;
+
+  let publish client telemetry =
+    let topic = Topic.telemetry ~hostname:telemetry.Telemetry.hostname in
+    let payload = Telemetry.to_json_string telemetry in
+    Mqtt.publish ~topic ~payload ~retain:false ~qos_at_most_once:true client
   ;;
 end

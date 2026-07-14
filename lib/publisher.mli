@@ -23,7 +23,10 @@ module type MQTT = sig
   val disconnect : client -> unit Lwt.t
 end
 
-module Make : functor (_ : MQTT) -> sig
+module Make : functor (Mqtt : MQTT) -> sig
+  type client = Mqtt.client
+
   val client_id : hostname:string -> string
-  val publish_once : Config.t -> Telemetry.t -> unit Lwt.t
+  val connect : Config.t -> hostname:string -> client Lwt.t
+  val publish : client -> Telemetry.t -> unit Lwt.t
 end
